@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+	<head>
+    <style>
+      .grid {
+        display: flex;
+        justify-content: center;
+      }
+
+      .box {
+        box-sizing: border-box;
+        text-align: center;
+        color: lightcoral;
+        border: gainsboro solid 1px;
+        width: 40px;
+        height: 40px;
+        transition: all;
+        transition-duration: 300ms;
+      }
+      .box.filled {
+        background-color: red;
+      }
+      .box.empty {
+        background-color: aliceblue;
+      }
+      .box.active {
+        background-color: aquamarine;
+      }
+    </style>
+		<title>Grid Interview Test</title>
+	</head>
+	<body id='body'>
+	</body>
+  <script type='application/javascript'>
+    // helpers
+    function randomArray(l) {
+      return new Array(l).fill().map(_ => Math.round(Math.random() / 1.3));
+    }
+
+    function generateGrid(y, x) {
+      return new Array(y).fill().map((col, i) => randomArray(x));
+    }
+
+    const grid = generateGrid(15, 30);
+
+    function sayHi(e, el) {
+      if (el.val) {
+        const elements = findAll(el);
+        elements.forEach(element => {
+          document.getElementById(element.id).classList.add('active');
+        });
+        e.target.innerHTML = elements.length;
+      }
+    }
+
+    function createBoxElement(params) {
+      const cell = document.createElement('div');
+      cell.className = params.val ? 'box filled' : 'box empty';
+      cell.id = params.id;
+      cell.onclick = (e) => sayHi(e, params);
+      return cell;
+    }
+
+    const G = grid.map((row, y) => {
+      const ul = document.createElement('div');
+      ul.className = 'grid';
+      document.body.appendChild(ul)
+      return row.map((val, x) => {
+        const id = Math.random().toString(16).slice(2);
+        ul.appendChild(createBoxElement({ val, x, y, id }));
+        return ({ val, x, y, id });
+      });
+    });
+
+    const directions = {
+      left: [0, 1],
+      down: [1, 0],
+      right: [0, -1],
+      up: [-1, 0],
+    };
+
+    const look = (cur, dir, found) => { 
+      // avoid exception for mishandling index
+      try { 
+        const cell = G[cur.y + dir[0]][cur.x + dir[1]]; 
+        if (cell.val && !found.some(el => el.id === cell.id)) return cell;
+      } catch {}
+    }
+
+    // find all connected squares
+    const findAll = (cur, found = [], tmp = []) => {
+      found.push(cur);
+      for (var dir in directions) {
+        const cell = look(cur, directions[dir], found);
+        if (cell) tmp.push(cell);
+      }
+
+      tmp.map(cell => findAll(cell, found))
+      return found;
+    }
+  </script>
+</html>
