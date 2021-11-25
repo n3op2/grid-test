@@ -64,8 +64,8 @@ const Game = () => {
         }, grid);  
     }
 
-    const step = (vectors) => update({
-        activeVectors: vectors,
+    const step = (vectors, hover = false) => update({
+        activeVectors: hover ? [] : vectors,
         grid: updateVectors(vectors),
     });
 

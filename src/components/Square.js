@@ -10,10 +10,13 @@ const Square = ({ step, ...props }) => {
 
     React.useEffect(() => {
         if (props.active) setCount(props.count)
-        else setCount(false);
+        else {
+            setCount(false);
+        }
     }, [ props ]);
 
     return <div
+        onMouseOver={() => step(view.findAll(props))}
         style={{
             width: 20,
             height: 20,
